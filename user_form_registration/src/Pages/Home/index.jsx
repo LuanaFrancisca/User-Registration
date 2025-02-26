@@ -1,41 +1,50 @@
+import { useEffect } from "react";
 import "./style.css";
 import Trash from "../../assets/lixo.svg";
+import api from "../../services/api";
 
 function Home() {
-  const users = [
-    {
-      id: "2342asshsu",
-      name: "Maria",
-      age: "35",
-      email: "maria@email.com",
-    },
-    {
-      id: "7542aklshu",
-      name: "Luana",
-      age: "36",
-      email: "luana@email.com",
-    },
-  ];
+  let users = [];
+
+  async function getUsers() {
+    const usersFromApi = await api.get("/users");
+
+    users = usersFromApi.data;
+    console.log(users);
+  }
+
+  useEffect(() => {
+    getUsers();
+  }, []);
+
   return (
     <div className="container">
       <form>
         <h1>User Registration</h1>
-        <input name="nome" type="text" />
-        <input name="age" type="number" />
-        <input name="email" type="email" />
+        <input placeholder="Name" name="nome" type="text" />
+        <input placeholder="Age" name="age" type="number" />
+        <input placeholder="Email" name="email" type="email" />
         <button type="button">Resgistration</button>
       </form>
 
-      <div>
-        <div>
-          <p>Name:</p>
-          <p>Age:</p>
-          <p>Email:</p>
+      {users.map((user) => (
+        <div key={user.id} className="card">
+          <div>
+            <p>
+              Name: <span>{user.name}</span>
+            </p>
+            <p>
+              Age: <span>{user.age}</span>
+            </p>
+            <p>
+              Email:<span>{user.email}</span>
+            </p>
+          </div>
           <button>
             <img src={Trash} alt="icon" />
           </button>
         </div>
-      </div>
+      ))}
     </div>
   );
 }
